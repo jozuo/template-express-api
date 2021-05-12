@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  express:
+    build:
+      context: .
+    init: true
+    restart: unless-stopped
+    environment:
+      - TYPEORM_CONNECTION=mysql
+      - TYPEORM_HOST=mysql
+      - TYPEORM_PORT=3306
+      - TYPEORM_USERNAME=test_user
+      - TYPEORM_PASSWORD=test_pass
+      - TYPEORM_DATABASE=test_db
+      - TYPEORM_SYNCHRONIZE=false
+      - TYPEORM_LOGGING=false
+      - TYPEORM_ENTITIES=src/entities/**/*.ts
+    ports:
+      - "3000:3000"
+    logging:
+      options:
+        max-size: "5mb"
+        max-file: "3"
+
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=test_user
+      - MYSQL_PASSWORD=test_pass
+      - MYSQL_DATABASE_test_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    logging:
+      options:
+        max-size: "5mb"
+        max-file: "3"
+
+volumes:
+  mysql_data:
